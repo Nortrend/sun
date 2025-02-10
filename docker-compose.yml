@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+    nginx:
+        image: nginx:latest
+        volumes:
+            - ./:/var/www
+            - ./_docker/nginx/conf.d:/etc/nginx/conf.d
+        ports:
+            - "8876:80"
+        depends_on:
+            - app
+        container_name: sun_nginx
+
+    app:
+        build:
+            context: .
+            dockerfile: _docker/app/Dockerfile
+        ports:
+            - "5173:5173" # Пробрасывает порт 5173
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - db
+        container_name: sun_app
+
+    db:
+        image: mysql:8.0
+        restart: always
+        environment:
+            MYSQL_DATABASE: sun_database
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_USER: sun
+            MYSQL_PASSWORD: secret
+        ports:
+            - "8101:3306"
+        command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+        container_name: sun_db
