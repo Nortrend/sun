@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
         $user->profile()->create();
 
         $this->call([
+            ProfileSeeder::class,
             TagSeeder::class,
             CategorySeeder::class,
             PostSeeder::class,

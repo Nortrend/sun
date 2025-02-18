@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Model
 {
+
+    use HasFactory;
     public function profile(): HasOne
     {
         return $this->hasOne(Profile::class);
