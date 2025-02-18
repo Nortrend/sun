@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Profile;
 
 return new class extends Migration
 {
@@ -11,13 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('likeables', function (Blueprint $table) {
             $table->id();
-            $table->morphs('commentable');
-//            $table->foreignId('post_id')->index()->constrained('posts');
+            $table->morphs('likeable');
             $table->foreignId('profile_id')->index()->constrained('profiles');
-            $table->text('content')->nullable();
-            $table->foreignId('parent_id')->index()->nullable()->constrained('comments');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('likeables');
     }
 };
