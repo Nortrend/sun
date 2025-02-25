@@ -9,12 +9,15 @@ use Illuminate\Database\Seeder;
 
 class ProfileSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $user = User::first();
-        $profile = Profile::factory()->count(10)->for($user)->create();
+
+        // Создаем ровно 10 пользователей
+        $users = User::factory(10)->create();
+
+        // Для каждого пользователя создаем профиль
+        $users->each(function ($user) {
+            Profile::factory()->create(['user_id' => $user->id]);
+        });
     }
 }

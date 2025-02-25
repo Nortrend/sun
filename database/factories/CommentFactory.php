@@ -19,8 +19,8 @@ class CommentFactory extends Factory
     public function definition(): array
     {
         return [
-            'commentable_type' => Post::factory(),  // Генерация поста, если это необходимо
-            'profile_id' => Profile::factory(),  // Связь с профилем
+            'commentable_type' => Post::inRandomOrder()->first()->id ?? Post::factory(),  // Использует существующий пост или создает новый
+            'profile_id' => Profile::inRandomOrder()->first()->id ?? Profile::factory(),  // Использует существующий профиль или создает новый
         ];
     }
 }

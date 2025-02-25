@@ -19,7 +19,7 @@ class ProfileFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
-            'user_id' => User::factory(),  // Генерация пользователя для связывания
+            'user_id' => User::query()->inRandomOrder()->first()?->id ?? User::factory(),
         ];
     }
 }

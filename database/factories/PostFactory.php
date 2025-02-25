@@ -19,14 +19,14 @@ class PostFactory extends Factory
     public function definition(): array
     {
         return [
-'title' => fake()->realTextBetween(10, 20),
-'content' => fake()->realTextBetween(50, 150),
-'profile_id' => Profile::first()->id,
-'is_published' => fake()->boolean,
-'image_path' => fake()->imageUrl,
-'category_id' => Category::inRandomOrder()->first()->id,
-'views' => fake()->numberBetween(0, 100),
-'published_at' => fake()->dateTime,
+            'title' => fake()->realTextBetween(10, 20),
+            'content' => fake()->realTextBetween(50, 150),
+            'profile_id' => Profile::query()->inRandomOrder()->first()?->id ?? Profile::factory(), // Берем случайный профиль
+            'is_published' => fake()->boolean,
+            'image_path' => fake()->imageUrl(),
+            'category_id' => Category::query()->inRandomOrder()->first()?->id ?? Category::factory(), // Берем случайную категорию
+            'views' => fake()->numberBetween(0, 100),
+            'published_at' => fake()->dateTime(),
         ];
     }
 }

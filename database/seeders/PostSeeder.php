@@ -6,39 +6,60 @@ use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Profile;
 use App\Models\Tag;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PostSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Запускает сидер постов.
      */
     public function run(): void
     {
-        $posts = Post::factory(10)->has(Comment::factory()->count(5),'comments')->create();
+        // Создаем посты с комментариями
+        $posts = Post::factory(30)
+            ->has(Comment::factory()->count(5), 'comments')
+            ->create();
 
+        // Получаем все теги, если они есть
         $tags = Tag::all();
-        foreach ($posts as $post) {
-            $post->tags()->syncWithoutDetaching($tags->random(fake()->numberBetween(1, 5))->pluck('id'));
+        if ($tags->isNotEmpty()) {
+            foreach ($posts as $post) {
+                $post->tags()->syncWithoutDetaching(
+                    $tags->random(min($tags->count(), fake()->numberBetween(1, 5)))->pluck('id')
+                );
+            }
         }
 
+        // Получаем все профили, если они есть
         $profiles = Profile::all();
-        foreach ($posts as $post) {
-            $post->likedBy()->syncWithoutDetaching($profiles->random(fake()->numberBetween(1, 5))->pluck('id'));
+        Post::factory(10)->create([
+            'profile_id' => $profiles->random()->id, // Случайный профиль
+        ]);
+        if ($profiles->isNotEmpty()) {
+            foreach ($posts as $post) {
+                $post->likedBy()->syncWithoutDetaching(
+                    $profiles->random(min($profiles->count(), fake()->numberBetween(1, 5)))->pluck('id')
+                );
+            }
         }
 
-        $comments = Comment::all(); // все комментарии
+        // Добавляем дочерние комментарии
+        $allComments = Comment::all(); // Получаем все комментарии
         foreach ($posts as $post) {
             foreach ($post->comments as $comment) {
-                // Для каждого комментария добавляем случайное количество дочерних комментариев
-                $randomComments = $comments->random(fake()->numberBetween(1, 2));
-                foreach ($randomComments as $randomComment) {
-                    // Добавляем дочерний комментарий
-                    $randomComment->parent_id = $comment->id; // Устанавливаем родительский ID
-                    $randomComment->save(); // Сохраняем дочерний комментарий
+                // Фильтруем комментарии, чтобы исключить родителя из возможных детей
+                $availableComments = $allComments->where('id', '!=', $comment->id);
+
+                if ($availableComments->isNotEmpty()) {
+                    $randomComments = $availableComments->random(min($availableComments->count(), fake()->numberBetween(1, 2)));
+
+                    foreach ($randomComments as $randomComment) {
+                        $randomComment->parent_id = $comment->id; // Устанавливаем родительский ID
+                        $randomComment->save(); // Сохраняем дочерний комментарий
+                    }
                 }
             }
         }
     }
 }
+

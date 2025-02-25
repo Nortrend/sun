@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-
+use App\Traits\HasLogs;
 
 class Profile extends Model
 {
 
     use HasFactory;
+    use HasLogs;
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

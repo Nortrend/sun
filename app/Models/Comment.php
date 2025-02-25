@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-
+use App\Traits\HasLogs;
 
 class Comment extends Model
 {
 
     use HasFactory;
+    use HasLogs;
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);

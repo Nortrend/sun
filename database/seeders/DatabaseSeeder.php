@@ -15,17 +15,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        $user = [
-            'login' => 'user',
-            'email' => 'user@example.com',
-            'password' => Hash::make(123123123),
-        ];
-
-        $user = User::firstOrCreate([
-            'email' => $user['email'],
-        ],$user);
-
-        $user->profile()->create();
+//        $user = [
+//            'login' => 'user',
+//            'email' => 'user@example.com',
+//            'password' => Hash::make(123123123),
+//        ];
+//
+//        $user = User::firstOrCreate([
+//            'email' => $user['email'],
+//        ],$user);
+//
+//        $user->profile()->create();
 
         $this->call([
             ProfileSeeder::class,

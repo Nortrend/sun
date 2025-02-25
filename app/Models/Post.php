@@ -11,12 +11,13 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-
+use App\Traits\HasLogs;
 
 class Post extends Model
 {
 
     use HasFactory;
+    use HasLogs;
 
     public function category(): BelongsTo
     {

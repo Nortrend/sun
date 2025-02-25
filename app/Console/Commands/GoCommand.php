@@ -31,10 +31,6 @@ class GoCommand extends Command
      */
     public function handle()
     {
-//        $post = Post::first();
-//        $post->likedBy()->attach(1);
 
-        $profile = Profile::first();
-        dd($profile->likedPosts);
     }
 }
