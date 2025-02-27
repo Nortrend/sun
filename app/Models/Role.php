@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\HasEventLogs;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\HasLogs;
 
 
 class Role extends Model
 {
-    use HasLogs;
+    use HasEventLogs;
+//    use HasLogs;
 
 //    protected static function booted()
 //    {

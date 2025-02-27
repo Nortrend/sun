@@ -18,7 +18,7 @@ class GoCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'app:go-command';
+    protected $signature = 'go';
 
     /**
      * The console command description.
@@ -34,17 +34,13 @@ class GoCommand extends Command
     {
 
 //        чтение и изменение
-        $role = Role::find(5);
-        $role->update(['title' => 'new updated title']);
+//        Role::find(21)->update(['title' => 'newnewnew']);
 
 //        создание
-//             Role::create([
-//            'title' => 'super new Role Title',
-//        ]);
+//          Role::create(['title' => 'Role Title',]);
 
 //        удаление
-//        $role = Role::find(3);
-//        $role->delete();
+        Role::destroy(20);
 
     }
 }
