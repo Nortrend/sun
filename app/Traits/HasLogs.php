@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Events\LoggingCompleted;
+use App\Events\LoggingStarted;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -42,6 +44,8 @@ trait HasLogs
     protected function logEvent(string $event): void
     {
         try {
+            // Вызываем событие начала логирования
+            event(new LoggingStarted($this, $event));
             DB::table('logs')->insert([
                 'model' => get_class($this),
                 'event' => $event,
@@ -50,6 +54,9 @@ trait HasLogs
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+
+            // Вызываем событие завершения логирования
+            event(new LoggingCompleted($this, $event));
         } catch (\Exception $e) {
             Log::error("Ошибка логирования для " . get_class($this) . ": " . $e->getMessage());
         }

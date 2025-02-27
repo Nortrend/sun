@@ -33,20 +33,18 @@ class GoCommand extends Command
     public function handle()
     {
 
-//        // чтение
-//        $role = Role::find(2);
-//
-//        // изменение
-//        $role->update(['title' => 'new updated title']);
+//        чтение и изменение
+        $role = Role::find(5);
+        $role->update(['title' => 'new updated title']);
 
-//        //создание
+//        создание
 //             Role::create([
-//            'title' => '3d Role Title',
+//            'title' => 'super new Role Title',
 //        ]);
 
 //        удаление
-        $role = Role::find(3);
-        $role->delete();
+//        $role = Role::find(3);
+//        $role->delete();
 
     }
 }
