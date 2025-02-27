@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\Image;
 use App\Models\Post;
 use App\Models\Profile;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Console\Command;
 
@@ -31,6 +32,21 @@ class GoCommand extends Command
      */
     public function handle()
     {
+
+//        // чтение
+//        $role = Role::find(2);
+//
+//        // изменение
+//        $role->update(['title' => 'new updated title']);
+
+//        //создание
+//             Role::create([
+//            'title' => '3d Role Title',
+//        ]);
+
+//        удаление
+        $role = Role::find(3);
+        $role->delete();
 
     }
 }

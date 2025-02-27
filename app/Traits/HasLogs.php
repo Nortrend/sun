@@ -11,16 +11,33 @@ trait HasLogs
     /**
      * Автоматическое логирование событий модели
      */
-    protected static function booted(): void
+    protected static function bootHasLogs(): void
     {
-        static::created(fn(Model $model) => $model->logEvent('created'));
-        static::updated(fn(Model $model) => $model->logEvent('updated'));
-        static::deleted(fn(Model $model) => $model->logEvent('deleted'));
-        static::retrieved(fn(Model $model) => $model->logEvent('retrieved'));
+        static::registerEvent('created');
+        static::registerEvent('updated');
+        static::registerEvent('deleted');
+        static::registerEvent('retrieved');
     }
 
     /**
-     * Логирование события модели в БД
+     * Регистрация событий модели
+     */
+    protected static function registerEvent(string $event): void
+    {
+        static::$event(function (Model $model) use ($event) {
+            // Если в модели определен метод {event}Event(), используем его
+            $method = $event . 'Event';
+            if (method_exists($model, $method)) {
+                return $model->{$method}();
+            }
+
+            // В противном случае используем стандартное логирование
+            $model->logEvent($event);
+        });
+    }
+
+    /**
+     * Логирование события модели в таблицу logs
      */
     protected function logEvent(string $event): void
     {
@@ -28,8 +45,8 @@ trait HasLogs
             DB::table('logs')->insert([
                 'model' => get_class($this),
                 'event' => $event,
-                'old_data' => $event === 'updated' ? json_encode($this->getOriginal()) : null,
-                'new_data' => json_encode($this->getAttributes()),
+                'old_data' => in_array($event, ['updated', 'deleted']) ? json_encode($this->getOriginal()) : null,
+                'new_data' => $event !== 'deleted' ? json_encode($this->getAttributes()) : null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

@@ -14,6 +14,8 @@ class Tag extends Model
     use HasFactory;
     use HasLogs;
 
+
+
     public function posts(): BelongsToMany
     {
         return $this->belongsToMany(Post::class);
