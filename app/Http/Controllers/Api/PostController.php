@@ -53,12 +53,17 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function destroy($id): JsonResponse
     {
+        $post = Post::find($id);
+
+        if (!$post) {
+            return response()->json(['error' => 'Post not found'], Response::HTTP_NOT_FOUND);
+        }
+
         $post->delete();
-        return response([
-            'message' => 'Post deleted successfully'
-            ],
-            Response::HTTP_OK);
+
+        return response()->json(['success' => 'Post deleted successfully']);
     }
+
 }

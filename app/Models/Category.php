@@ -12,8 +12,8 @@ use App\Traits\HasLogs;
 class Category extends Model
 {
 
-    use HasFactory;
-    use HasLogs;
+//    use HasFactory;
+//    use HasLogs;
 
     public function posts()
     {

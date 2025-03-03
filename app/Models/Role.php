@@ -7,16 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\HasLogs;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-
 class Role extends Model
 {
-    use HasEventLogs;
+//    use HasEventLogs;
 //    use HasLogs;
 
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'role_user');
     }
+
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class, 'permission_role');
+    }
+
 
 
 

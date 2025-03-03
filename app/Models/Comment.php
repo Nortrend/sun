@@ -12,8 +12,8 @@ use App\Traits\HasLogs;
 class Comment extends Model
 {
 
-    use HasFactory;
-    use HasLogs;
+//    use HasFactory;
+//    use HasLogs;
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Log extends Model
 {
-    use HasFactory;
+//    use HasFactory;
 //
 //    protected $table = 'logs'; // Явно указываем таблицу (необязательно, но можно)
 //

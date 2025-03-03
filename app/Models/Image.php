@@ -8,7 +8,7 @@ use App\Traits\HasLogs;
 
 class Image extends Model
 {
-    use HasLogs;
+//    use HasLogs;
     public function imageable(): MorphTo
     {
         return $this->morphTo();

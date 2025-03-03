@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -14,24 +15,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $permissions = ['store', 'show', 'update', 'delete'];
 
-//        $user = [
-//            'login' => 'user',
-//            'email' => 'user@example.com',
-//            'password' => Hash::make(123123123),
-//        ];
-//
-//        $user = User::firstOrCreate([
-//            'email' => $user['email'],
-//        ],$user);
-//
-//        $user->profile()->create();
+        foreach ($permissions as $perm) {
+            Permission::firstOrCreate(['title' => $perm]);
+        }
 
-        $this->call([
-            ProfileSeeder::class,
-            TagSeeder::class,
-            CategorySeeder::class,
-            PostSeeder::class,
-        ]);
+//        $this->call([
+//            ProfileSeeder::class,
+//            TagSeeder::class,
+//            CategorySeeder::class,
+//            PostSeeder::class,
+//        ]);
     }
 }
