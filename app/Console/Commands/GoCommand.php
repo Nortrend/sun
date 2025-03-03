@@ -37,10 +37,11 @@ class GoCommand extends Command
 //        Role::find(21)->update(['title' => 'newnewnew']);
 
 //        создание
-//          Role::create(['title' => 'Role Title',]);
+          Profile::create(['name' => 'new name',
+              'user_id' => 1,]);
 
 //        удаление
-        Role::destroy(20);
+//        Role::destroy(20);
 
     }
 }

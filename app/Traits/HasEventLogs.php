@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Storage;
 
 trait HasEventLogs
 {
+
+    /**
+     * Этот метод автоматически вызывается при загрузке трейта в модель.
+     * Он регистрирует обработчики событий модели.
+     */
     protected static function bootHasEventLogs()
     {
         static::created(fn(Model $model) => $model->logEvent('created'));
@@ -17,6 +22,10 @@ trait HasEventLogs
         static::deleted(fn(Model $model) => $model->logEvent('deleted'));
     }
 
+    /**
+     * Метод логирования событий модели.
+     * @param string $event Тип события (created, updated, retrieved, deleted)
+     */
     protected function logEvent(string $event): void
     {
         $logEntry = match ($event) {
@@ -26,10 +35,14 @@ trait HasEventLogs
             default => [],
         };
 
-        // Передаем три аргумента
+        // Вызываем метод для записи лога в файл
         $this->writeToLog(class_basename($this), $event, $logEntry);
     }
 
+    /**
+     * Метод для получения измененных атрибутов модели при обновлении.
+     * @return array Ассоциативный массив с измененными полями (ключ: имя поля, значение: старое и новое значение).
+     */
     protected function getChangedAttributes(): array
     {
         return collect($this->getChanges())
@@ -37,6 +50,12 @@ trait HasEventLogs
             ->toArray();
     }
 
+    /**
+     * Запись логов в файлы.
+     * @param string $model Название модели (например, Post, User)
+     * @param string $event Тип события (created, updated, retrieved, deleted)
+     * @param array $data Данные для записи
+     */
     protected function writeToLog(string $model, string $event, array $data): void
     {
         $directoryPath = storage_path("logs/{$model}");
@@ -53,7 +72,7 @@ trait HasEventLogs
         $timestamp = now()->format('Y-m-d H:i:s');
         $logEntry = "{$timestamp} | Data: " . json_encode($data, JSON_UNESCAPED_UNICODE) . PHP_EOL;
 
-        // Записываем в файл
+        // Записываем данные в лог-файл (добавляем в конец файла)
         File::append($logFile, $logEntry);
     }
 

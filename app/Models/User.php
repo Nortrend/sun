@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Traits\HasLogs;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 
 class User extends Model
@@ -20,4 +21,10 @@ class User extends Model
     {
         return $this->hasOne(Profile::class);
     }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'role_user');
+    }
+
 }
