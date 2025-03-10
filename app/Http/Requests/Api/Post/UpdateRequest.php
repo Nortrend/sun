@@ -17,14 +17,10 @@ class UpdateRequest extends FormRequest
         return [
             'title' => 'required|string',
             'content' => 'nullable|string',
-            'author' => 'required|string',
+            'profile_id' => 'required|integer|exists:profiles,id',
             'is_published' => 'nullable|boolean',
-            'category' => 'nullable|string',
-            'like' => 'nullable|integer',
-            'image_path' => 'nullable|string|unique:posts,image_path,' . $this->post->id,
-            'tag' => 'nullable|string',
+            'category_id' => 'required|integer|exists:categories,id',
             'views' => 'nullable|integer',
-            'published_at' => 'nullable|date_format:Y-m-d',
         ];
     }
 }

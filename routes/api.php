@@ -19,13 +19,15 @@ Route::group(['middleware' => 'jwt.auth', 'prefix' => 'auth'], function () {
 Route::middleware(['auth', 'check.role:articles'])->group(function () {
     Route::get('/articles', [ArticleController::class, 'index'])->middleware('check.permission:show');
     Route::post('/articles', [ArticleController::class, 'store'])->middleware('check.permission:store');
-    Route::put('/articles/{id}', [ArticleController::class, 'update'])->middleware('check.permission:update');
+    Route::get('/articles/{articles}', [ArticleController::class, 'show'])->middleware('check.permission:show');
+    Route::patch('/articles/{id}', [ArticleController::class, 'update'])->middleware('check.permission:update');
     Route::delete('/articles/{id}', [ArticleController::class, 'destroy'])->middleware('check.permission:delete');
 });
 
 Route::middleware(['auth', 'check.role:posts'])->group(function () {
     Route::get('/posts', [PostController::class, 'index'])->middleware('check.permission:show');
     Route::post('/posts', [PostController::class, 'store'])->middleware('check.permission:store');
+    Route::get('/posts/{posts}', [PostController::class, 'show'])->middleware('check.permission:show');
     Route::put('/posts/{id}', [PostController::class, 'update'])->middleware('check.permission:update');
     Route::delete('/posts/{id}', [PostController::class, 'destroy'])->middleware('check.permission:delete');
 });

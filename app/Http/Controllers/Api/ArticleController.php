@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Article\UpdateRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Article;
@@ -20,12 +21,14 @@ class ArticleController extends Controller
         return response()->json($article, 201);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(UpdateRequest $request, $id): JsonResponse
     {
         $article = Article::findOrFail($id);
-        $article->update($request->all());
+        $article->update($request->validated());
+
         return response()->json($article);
     }
+
 
     public function destroy($id): JsonResponse
     {

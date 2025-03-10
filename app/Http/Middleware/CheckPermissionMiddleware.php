@@ -14,7 +14,7 @@ class CheckPermissionMiddleware
         $user = Auth::user();
 
         // Определяем секцию (из URI запроса)
-        $section = $request->segment(2); // Получаем первую часть URL (например, "articles")
+        $section = $request->segment(2); // Получаем вторую часть URL (например, "articles")
 //        dump([
 //            'user_id' => $user?->id,
 //            'permission' => $permission,
