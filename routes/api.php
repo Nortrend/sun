@@ -20,7 +20,7 @@ Route::middleware(['auth', 'check.role:articles'])->group(function () {
     Route::get('/articles', [ArticleController::class, 'index'])->middleware('check.permission:show');
     Route::post('/articles', [ArticleController::class, 'store'])->middleware('check.permission:store');
     Route::get('/articles/{articles}', [ArticleController::class, 'show'])->middleware('check.permission:show');
-    Route::patch('/articles/{id}', [ArticleController::class, 'update'])->middleware('check.permission:update');
+    Route::put('/articles/{id}', [ArticleController::class, 'update'])->middleware('check.permission:update');
     Route::delete('/articles/{id}', [ArticleController::class, 'destroy'])->middleware('check.permission:delete');
 });
 

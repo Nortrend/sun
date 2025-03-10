@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Article\StoreRequest;
 use App\Http\Requests\Api\Article\UpdateRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,11 +16,13 @@ class ArticleController extends Controller
         return response()->json(Article::all());
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreRequest $request): JsonResponse
     {
-        $article = Article::create($request->all());
+        $article = Article::create($request->validated());
+
         return response()->json($article, 201);
     }
+
 
     public function update(UpdateRequest $request, $id): JsonResponse
     {
