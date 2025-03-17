@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Models\Traits\HasFilter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -11,6 +12,13 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Article extends Model
 {
+
+    use HasFilter;
+
+    protected $fillable = [
+        'title', 'content', 'profile_id', 'category_id', 'created_at'
+    ];
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

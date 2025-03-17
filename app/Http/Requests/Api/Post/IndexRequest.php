@@ -18,6 +18,8 @@ class IndexRequest extends FormRequest
             'category_title'       => 'nullable', 'string', 'exists:categories,id',
             'views_from'           => 'nullable', 'integer', 'min:0',
             'views_to'             => 'nullable', 'integer', 'min:0',
+            'likes_from'           => 'nullable', 'integer', 'min:0',
+            'likes_to'             => 'nullable', 'integer', 'min:0',
             'published_at_from'    => 'nullable', 'date_format:Y-m-d',
             'published_at_to'      => 'nullable', 'date_format:Y-m-d',
         ];

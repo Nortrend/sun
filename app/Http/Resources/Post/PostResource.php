@@ -14,8 +14,10 @@ class PostResource extends JsonResource
     {
 
         return [
-            'id' => $this->id,
-            'title' => $this->title,
+            'id'            => $this->id,
+            'title'         => $this->title,
+            'content'       => $this->content,
+            'likes_count'   => $this->likes_count ?? 0, // 🔥 Добавляем `?? 0`, чтобы не было null
         ];
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Http\Filters\PostFilter;
 use App\Traits\Models\Traits\HasFilter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,14 +19,10 @@ use Illuminate\Database\Eloquent\Builder;
 class Post extends Model
 {
 
-//    use HasFactory;
-//    use HasLogs;
 use HasFilter;
     protected $fillable = [
         'title', 'content', 'profile_id', 'category_id', 'is_published', 'views', 'published_at'
     ];
-
-
 
     public function category(): BelongsTo
     {
@@ -53,6 +48,12 @@ use HasFilter;
     {
         return $this->morphToMany(Profile::class, 'likeable');
     }
+
+    public function getLikesCountAttribute(): int
+    {
+        return $this->likedBy()->count();
+    }
+
 
     public function image(): MorphOne
     {

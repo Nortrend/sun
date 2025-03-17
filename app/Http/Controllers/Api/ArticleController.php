@@ -3,17 +3,22 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Article\IndexRequest;
 use App\Http\Requests\Api\Article\StoreRequest;
 use App\Http\Requests\Api\Article\UpdateRequest;
+use App\Http\Resources\Article\ArticleResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Article;
 
 class ArticleController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(IndexRequest $request): JsonResponse
     {
-        return response()->json(Article::all());
+        $data = $request->validated();
+        $articles = Article::filter($data)->get();
+
+        return ArticleResource::collection($articles)->response();
     }
 
     public function store(StoreRequest $request): JsonResponse

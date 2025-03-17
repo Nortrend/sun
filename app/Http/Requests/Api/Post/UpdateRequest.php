@@ -17,9 +17,9 @@ class UpdateRequest extends FormRequest
         return [
             'title' => 'required|string',
             'content' => 'nullable|string',
-            'profile_id' => 'required|integer|exists:profiles,id',
+            'profile_id' => 'nullable|integer|exists:profiles,id',
             'is_published' => 'nullable|boolean',
-            'category_id' => 'required|integer|exists:categories,id',
+            'category_id' => 'nullable|integer|exists:categories,id',
             'views' => 'nullable|integer',
         ];
     }

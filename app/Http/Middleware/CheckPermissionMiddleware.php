@@ -15,18 +15,28 @@ class CheckPermissionMiddleware
 
         // Определяем секцию (из URI запроса)
         $section = $request->segment(2); // Получаем вторую часть URL (например, "articles")
-//        dump([
-//            'user_id' => $user?->id,
-//            'permission' => $permission,
-//            'section' => $section,
-//            'has_permission' => $user ? $user->hasPermission($permission, $section) : false
-//        ]);
+
 
         if (!$user || !$user->hasPermission($permission, $section)) {
             abort(403, 'У вас нет разрешения на это действие');
         }
 
         return $next($request);
+//        $user = Auth::user();
+//
+//        // Если пользователь не аутентифицирован — просто пропускаем его
+//        if (!$user) {
+//            return $next($request);
+//        }
+//
+//        // Определяем секцию (из URI запроса)
+//        $section = $request->segment(2);
+//
+//        if (!$user->hasPermission($permission, $section)) {
+//            abort(403, 'У вас нет разрешения на это действие');
+//        }
+//
+//        return $next($request);
     }
 }
 

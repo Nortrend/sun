@@ -2,7 +2,6 @@
 
 namespace App\Traits\Models\Traits;
 
-use App\Http\Filters\PostFilter;
 use Illuminate\Database\Eloquent\Builder;
 
 trait HasFilter
@@ -11,10 +10,12 @@ trait HasFilter
     {
 
         $ClassName = 'App\\Http\\Filters\\' . class_basename($this) . 'Filter';
-//        $filter = new $ClassName();
-//
-//        return $filter->apply($data, $builder);
-        return (new $ClassName())->apply($data, $builder);
+        // Проверяем, что `scopeFilter()` вызывается и передаёт правильные данные
+//        dd('scopeFilter called', $data); // Проверяем, вызывается ли фильтрация
+
+        $filter = new $ClassName();
+
+        return $filter->apply($data, $builder);
 
     }
 }

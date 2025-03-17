@@ -36,4 +36,10 @@ class Profile extends Model
     {
         return $this->morphedByMany(Comment::class, 'likeable');
     }
+
+    public function getLikesCountAttribute(): int
+    {
+        return $this->likedBy()->count();
+    }
+
 }

@@ -23,5 +23,17 @@ class CheckRoleMiddleware
         }
 
         return $next($request);
+//        $user = Auth::user();
+//
+//        // Если пользователь не аутентифицирован — просто пропускаем его
+//        if (!$user) {
+//            return $next($request);
+//        }
+//
+//        if (!$user->roles->contains('title', "moderator_{$section}")) {
+//            abort(403, 'У вас нет доступа к этому разделу');
+//        }
+//
+//        return $next($request);
     }
 }
