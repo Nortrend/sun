@@ -2,81 +2,62 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\Profile\ProfileResource;
-use App\Services\ProfileService;
-use Illuminate\Http\JsonResponse;
-use App\Models\Profile;
+use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ProfileController extends Controller
 {
     /**
-     * Передача объекта класса ProfileService в качестве свойства текущего класса
+     * Display the user's profile form.
      */
-    public function __construct(private readonly ProfileService $profileService)
+    public function edit(Request $request): Response
     {
-    }
-    /**
-     * Отображение всей таблицы, отформатированной через ресурсный файл
-     */
-    public function index(): array
-    {
-
-        return ProfileResource::collection(Profile::all())->resolve();
-    }
-
-    public function store(): array
-    {
-        $data = [
-            'name' => 'MyName',
-            'phone' => '8 810 555 35 35',
-            'address' => 'Net address',
-            'gender' => 'Helicopter',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ];
-        $profile = $this->profileService->store($data);
-
-        return ProfileResource::make($profile)->resolve();
+        return Inertia::render('Profile/Edit', [
+            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'status' => session('status'),
+        ]);
     }
 
     /**
-     * возвращаем строку из таблицы, с ID который указан в роуте
-     * Route::get('/{profile}/show', [ProfileController::class, 'show']);
+     * Update the user's profile information.
      */
-    public function show(Profile $profile): array
+    public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        $request->user()->fill($request->validated());
 
-        return ProfileResource::make($profile)->resolve();
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
+        }
+
+        $request->user()->save();
+
+        return Redirect::route('profile.edit');
     }
 
     /**
-     * Обновление профиля по ID и возврат результата с учетом обработки ошибок в сервис файле
+     * Delete the user's account.
      */
-    public function update(Profile $profile): JsonResponse|array
+    public function destroy(Request $request): RedirectResponse
     {
-        $data = [
-            'phone' => '8 800 666 46 47',
-        ];
-        $profile = $this->profileService->update(1, $data);
+        $request->validate([
+            'password' => ['required', 'current_password'],
+        ]);
 
-        return $profile
-            ? ProfileResource::make($profile)->resolve()
-            : response()->json(['error' => 'Profile not found'], Response::HTTP_NOT_FOUND);
+        $user = $request->user();
+
+        Auth::logout();
+
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return Redirect::to('/');
     }
-
-    /**
-     * Удаление профиля по ID и возврат результата с учетом обработки ошибок в сервисе
-     */
-    public function destroy(): JsonResponse
-    {
-        $deleted = $this->profileService->destroy(6);
-
-        return $deleted
-            ? response()->json(['success' => 'Profile deleted successfully'])
-            : response()->json(['error' => 'Profile not found'], Response::HTTP_NOT_FOUND);
-    }
-
 }

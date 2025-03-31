@@ -14,7 +14,7 @@ use App\Traits\HasLogs;
 class Profile extends Model
 {
 
-//    use HasFactory;
+    use HasFactory;
 //    use HasLogs;
 //    use HasEventLogs;
     public function user(): BelongsTo

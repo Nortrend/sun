@@ -12,7 +12,7 @@ use App\Traits\HasLogs;
 class Comment extends Model
 {
 
-//    use HasFactory;
+    use HasFactory;
 //    use HasLogs;
     public function post(): BelongsTo
     {
@@ -38,5 +38,11 @@ class Comment extends Model
     {
         return $this->morphTo();
     }
+
+    public function profile(): BelongsTo
+    {
+        return $this->belongsTo(Profile::class);
+    }
+
 
 }

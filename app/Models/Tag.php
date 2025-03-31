@@ -11,7 +11,7 @@ use App\Traits\HasLogs;
 class Tag extends Model
 {
 
-//    use HasFactory;
+    use HasFactory;
 //    use HasLogs;
 
 

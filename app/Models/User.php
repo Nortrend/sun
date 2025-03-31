@@ -16,7 +16,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject
 {
 
-//    use HasFactory;
+    use HasFactory;
 //    use HasLogs;
     public function profile(): HasOne
     {

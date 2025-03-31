@@ -47,7 +47,7 @@ class QueryTester extends Command
                     'title' => 'Новый пост',
                     'content' => 'Тестовое содержимое',
                     'profile_id' => 1, // Убедись, что ID профиля существует
-                    'category_id' => 1, // Убедись, что ID категории существует
+                    'category_id' => 3, // Убедись, что ID категории существует
                     'is_published' => true,
                     'views' => 0,
                     'published_at' => now(),
@@ -56,6 +56,20 @@ class QueryTester extends Command
                 ]);
             } catch (\Exception $e) {
                 $this->logError('Ошибка в INSERT posts', $e);
+            }
+
+            // INSERT в posts
+            try {
+                DB::table('articles')->insert([
+                    'title' => 'new article',
+                    'content' => 'Тестовое содержимое',
+                    'profile_id' => 1, // Убедись, что ID профиля существует
+                    'category_id' => 3, // Убедись, что ID категории существует
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            } catch (\Exception $e) {
+                $this->logError('Ошибка в INSERT articles', $e);
             }
 
             // UPDATE views в posts

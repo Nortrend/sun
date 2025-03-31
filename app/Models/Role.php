@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasEventLogs;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\HasLogs;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -11,6 +12,7 @@ class Role extends Model
 {
 //    use HasEventLogs;
 //    use HasLogs;
+    use HasFactory;
 
     public function users(): BelongsToMany
     {

@@ -15,12 +15,12 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'post' => 'required|string',
+            'post' => 'nullable|string',
             'content' => 'nullable|string',
-            'author' => 'required|string',
+            'author' => 'nullable|string',
             'status' => 'nullable|string',
             'parent' => 'nullable|string',
-            'like' => 'required|integer',
+            'like' => 'nullable|integer',
         ];
     }
 }

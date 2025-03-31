@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Post;
-use App\Http\Resources\PostResource;
+use Illuminate\Support\Facades\Auth;
 
 class PostService
 {
@@ -15,39 +15,40 @@ class PostService
     /**
      * Создание поста в таблице
      */
-    public function store(array $data): Post{
+    public function store(array $data): Post
+    {
+        $profile = Auth::user()?->profile;
+
+        if (!$profile) {
+            throw new \Exception('Профиль пользователя не найден.');
+        }
+
+        $data['profile_id'] = $profile->id;
 
         return Post::create($data);
     }
 
-    /**
-     * Поиск поста по ID, его обновление и вывод на экран + обработка ошибок
-     */
     public function update(int $id, array $data)
     {
         $post = Post::find($id);
-        if (!$post) {
 
+        if (!$post) {
             return null;
         }
-        $post->update($data);
 
+        $post->update($data);
         return $post;
     }
 
-    /**
-     * Поиск поста по ID, его удаление и вывод на экран сообщения об успехе или неудаче
-     */
     public function destroy(int $id): bool
     {
         $post = Post::find($id);
-        if (!$post) {
 
+        if (!$post) {
             return false;
         }
-        $post->delete();
 
+        $post->delete();
         return true;
     }
-
 }

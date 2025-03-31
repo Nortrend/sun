@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Contracts\Commentable;
 use App\Traits\Models\Traits\HasFilter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,10 +17,11 @@ use App\Traits\HasLogs;
 use \App\Models\Log;
 use Illuminate\Database\Eloquent\Builder;
 
-class Post extends Model
+class Post extends Model implements Commentable
 {
+    use HasFactory;
 
-use HasFilter;
+    use HasFilter;
     protected $fillable = [
         'title', 'content', 'profile_id', 'category_id', 'is_published', 'views', 'published_at'
     ];
@@ -58,6 +60,11 @@ use HasFilter;
     public function image(): MorphOne
     {
         return $this->morphOne(Image::class, 'imageable');
+    }
+
+    public static function commentableLabel(): string
+    {
+        return 'Пост';
     }
 
 }
