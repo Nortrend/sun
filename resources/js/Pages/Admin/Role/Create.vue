@@ -1,15 +1,15 @@
 <template>
     <div>
+        <FlashMessage />
         <Link
-            :href="route('admin.categories.index')"
+            :href="route('admin.roles.index')"
             class="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800 transition shadow-md mt-4 inline-block"
         >
             ← Назад
         </Link>
         <div class="mt-10"></div>
-        <FlashMessage/>
 
-        <h1 class="text-2xl font-bold mb-6">Создание категории</h1>
+        <h1 class="text-2xl font-bold mb-6">Создание роли</h1>
 
         <form @submit.prevent="submit" class="space-y-6 max-w-xl">
             <div>
@@ -18,8 +18,8 @@
                     v-model="form.title"
                     type="text"
                     id="title"
-                    name="category_title"
-                    placeholder="Введите название категории"
+                    name="role_title"
+                    placeholder="Введите название роли"
                     autocomplete="off"
                     class="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 focus:ring focus:ring-blue-500 focus:border-blue-500 rounded-md w-full px-4 py-2"
                 />
@@ -51,9 +51,13 @@ export default {
     },
     methods: {
         submit() {
-            this.form.post(route('admin.categories.store'));
+            this.form.post(this.route('admin.roles.store'), {
+                onSuccess: () => {
+                    this.$inertia.reload({ only: ['flash'] })
+                }
+            })
         }
     },
-    layout:AdminLayout
+    layout:AdminLayout,
 };
 </script>

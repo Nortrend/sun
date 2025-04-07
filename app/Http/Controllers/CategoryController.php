@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\Role\RoleResource;
-use App\Services\RoleServicce;
+use App\Services\RoleService;
 use Illuminate\Http\JsonResponse;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -14,7 +14,7 @@ class CategoryController extends Controller
     /**
      * Передача объекта класса ProfileService в качестве свойства текущего класса
      */
-    public function __construct(private readonly RoleServicce $roleService)
+    public function __construct(private readonly RoleService $roleService)
     {
     }
 

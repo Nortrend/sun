@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use App\Traits\HasLogs;
 use \App\Models\Log;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
 
 class Post extends Model implements Commentable
 {
@@ -67,4 +68,12 @@ class Post extends Model implements Commentable
         return 'Пост';
     }
 
+    public function getImageUrlAttribute(): ?string
+    {
+        if ($this->image && $this->image->image_path) {
+            return Storage::disk('public')->url($this->image->image_path);
+        }
+
+        return null;
+    }
 }

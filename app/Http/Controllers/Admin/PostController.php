@@ -28,10 +28,11 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-        $post->load('profile');
+        $post->load(['profile', 'image']); // 🔥 добавили image
         $post = PostResource::make($post)->resolve();
         return inertia('Admin/Post/Show', compact('post'));
     }
+
 
     public function toggleLike(Post $post)
     {
@@ -66,7 +67,8 @@ class PostController extends Controller
 
     public function store(StoreRequest $request)
     {
-        $post = $this->postService->store($request->validated());
+        $data = $request->except('image');
+        $post = PostService::store($data);
         return PostResource::make($post)->resolve();
     }
 

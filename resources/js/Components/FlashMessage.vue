@@ -2,7 +2,7 @@
     <transition name="fade">
         <div
             v-if="visible"
-            class="mb-4 px-4 py-2 rounded bg-green-600 text-white shadow max-w-xl"
+            class="p-3 mb-4 rounded bg-green-100 text-green-800 border border-green-300"
         >
             {{ message }}
         </div>
@@ -11,36 +11,36 @@
 
 <script>
 export default {
-    props: {
-        message: {
-            type: String,
-            required: true
-        },
-        duration: {
-            type: Number,
-            default: 3000
-        }
-    },
     data() {
         return {
-            visible: true
-        };
+            message: null,
+            visible: false,
+        }
     },
-    mounted() {
-        setTimeout(() => {
-            this.visible = false;
-        }, this.duration);
+    watch: {
+        '$page.props.flash.success': {
+            immediate: true,
+            handler(val) {
+                if (val) {
+                    this.message = val
+                    this.visible = true
+
+                    setTimeout(() => {
+                        this.visible = false
+                        this.message = null
+                    }, 3000)
+                }
+            }
+        }
     }
-};
+}
 </script>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.3s ease;
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.4s;
 }
-.fade-enter-from,
-.fade-leave-to {
+.fade-enter-from, .fade-leave-to {
     opacity: 0;
 }
 </style>

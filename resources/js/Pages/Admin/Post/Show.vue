@@ -1,7 +1,14 @@
 <template>
     <div class="relative">
+    <div>
         <h3>{{ post.title }}</h3>
+    </div>
+    <div>
+        <img v-if="post.image_url" :src="post.image_url" alt="Post image" class="max-w-full h-auto mb-4 rounded-lg shadow">
+    </div>
+    <div>
         <p>{{ post.content }}</p>
+    </div>
         Автор:
         <Link :href="route('admin.profiles.show', post.profile?.id)" class="text-sm text-gray-500 mt-4 hover:underline">
             {{ post.profile?.name ?? 'Неизвестный' }}

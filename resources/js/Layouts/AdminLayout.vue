@@ -20,9 +20,18 @@
           <li>
            <Link :href="route('admin.categories.index')">Categories</Link>
         </li>
-          <li>
-              <Link :href="route('admin.profiles.index')">Profiles</Link>
-          </li>
+        <li>
+           <Link :href="route('admin.profiles.index')">Profiles</Link>
+        </li>
+        <li>
+            <Link :href="route('admin.roles.index')">Roles</Link>
+        </li>
+        <li>
+            <Link :href="route('admin.permissions.index')">Permissions</Link>
+        </li>
+        <li>
+            <Link :href="route('admin.role_users.index')">User->Role</Link>
+        </li>
       </ul>
     </nav>
     <main class="content">

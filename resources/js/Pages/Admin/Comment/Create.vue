@@ -1,7 +1,12 @@
 <template>
     <div class="p-6">
-        <h1 class="text-2xl font-bold mb-6">Создание комментария</h1>
-
+        <Link
+            :href="route('admin.comments.index')"
+            class="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800 transition shadow-md mt-4 inline-block"
+        >
+            ← Назад
+        </Link>
+        <div class="mt-10"></div>
         <form @submit.prevent="submit" class="space-y-6 max-w-xl">
             <div>
                 <label for="content" class="block text-sm font-medium text-gray-300 mb-1">Текст комментария</label>

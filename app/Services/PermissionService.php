@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Role;
+use App\Models\Permission;
 
-class RoleServicce
+class PermissionService
 {
     /**
      * Create a new class instance.
@@ -17,10 +17,10 @@ class RoleServicce
     /**
      * Создание категории в таблице
      */
-    public function store(array $data): Role
+    public function store(array $data): Permission
     {
 
-        return Role::create($data);
+        return Permission::create($data);
     }
 
     /**
@@ -28,7 +28,7 @@ class RoleServicce
      */
     public function update(int $id, array $data)
     {
-        $role = Role::find($id);
+        $role = Permission::find($id);
         if (!$role) {
 
             return null;
@@ -43,7 +43,7 @@ class RoleServicce
      */
     public function destroy(int $id): bool
     {
-        $role = Role::find($id);
+        $role = Permission::find($id);
         if (!$role) {
 
             return false;

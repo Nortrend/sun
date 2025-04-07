@@ -3,10 +3,13 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\RoleUserController;
 use App\Http\Middleware\CheckRoleMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -45,4 +48,20 @@ Route::group(['prefix' =>'admin', 'middleware' => 'auth'], function () {
     Route::post('profiles', [ProfileController::class, 'store'])->name('admin.profiles.store');
     Route::get('profiles/create', [ProfileController::class, 'create'])->name('admin.profiles.create');
     Route::get('profiles/{profile}', [ProfileController::class, 'show'])->name('admin.profiles.show');
+
+    Route::get('roles', [RoleController::class, 'index'])->name('admin.roles.index');
+    Route::post('roles', [RoleController::class, 'store'])->name('admin.roles.store');
+    Route::get('roles/create', [RoleController::class, 'create'])->name('admin.roles.create');
+    Route::get('roles/{role}', [RoleController::class, 'show'])->name('admin.roles.show');
+
+    Route::get('permissions', [PermissionController::class, 'index'])->name('admin.permissions.index');
+    Route::post('permissions', [PermissionController::class, 'store'])->name('admin.permissions.store');
+    Route::get('permissions/create', [PermissionController::class, 'create'])->name('admin.permissions.create');
+    Route::get('permissions/{permission}', [PermissionController::class, 'show'])->name('admin.permissions.show');
+
+    Route::get('role_users', [RoleUserController::class, 'index'])->name('admin.role_users.index');
+    Route::post('role_users', [RoleUserController::class, 'store'])->name('admin.role_users.store');
+    Route::get('role_users/create', [RoleUserController::class, 'create'])->name('admin.role_users.create');
+    Route::get('role_users/{role_user}', [RoleUserController::class, 'show'])->name('admin.role_users.show');
+
 });

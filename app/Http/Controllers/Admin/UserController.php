@@ -45,10 +45,11 @@ class UserController extends Controller
 
     public function list(Request $request)
     {
-        $query = User::query()->select('id', 'email');
+        $query = User::query()->select('id', 'login', 'email');
 
         if ($search = $request->get('search')) {
-            $query->where('email', 'like', "%{$search}%");
+            $query->where('email', 'like', "%{$search}%")
+                ->orWhere('login', 'like', "%{$search}%");;
         }
 
         return $query->limit(10)->get();

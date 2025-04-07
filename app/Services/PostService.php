@@ -15,17 +15,18 @@ class PostService
     /**
      * Создание поста в таблице
      */
-    public function store(array $data): Post
+    public static function store(array $data): Post
     {
-        $profile = Auth::user()?->profile;
+        $imagePath = $data['image_path'] ?? null;
+        unset($data['image_path']);
 
-        if (!$profile) {
-            throw new \Exception('Профиль пользователя не найден.');
+        $post = Post::create($data);
+
+        if ($imagePath !== null) {
+            $post->image()->create(['image_path' => $imagePath]);
         }
 
-        $data['profile_id'] = $profile->id;
-
-        return Post::create($data);
+        return $post;
     }
 
     public function update(int $id, array $data)
