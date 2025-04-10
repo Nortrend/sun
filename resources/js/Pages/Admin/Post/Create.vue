@@ -1,29 +1,60 @@
 <template>
     <div>
-        <h1 class="text-xl font-bold mb-4">Создать пост</h1>
+        <div>
+            <Link
+                :href="route('admin.posts.index')"
+                class="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800 transition shadow-md mt-4 inline-block"
+            >
+                ← Назад
+            </Link>
+            <div class="mt-10"></div>
+        </div>
         <form @submit.prevent="submit">
             <div class="mb-4">
                 <label class="block">Заголовок</label>
-                <input v-model="form.title" type="text" class="w-full" />
+                <div class="mb-4">
+                    <input
+                        v-model="form.title"
+                        type="text"
+                        class="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 focus:ring focus:ring-blue-500 focus:border-blue-500 rounded-md w-full px-4 py-2"
+                    >
+                </div>
             </div>
-
             <div class="mb-4">
                 <label class="block">Контент</label>
-                <textarea v-model="form.content" class="w-full"></textarea>
+                <div class="mb-4">
+                    <input
+                        v-model="form.content"
+                        type="text"
+                        class="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 focus:ring focus:ring-blue-500 focus:border-blue-500 rounded-md w-full px-4 py-2"
+                    >
+                </div>
             </div>
-
+            <label class="block">Категория</label>
             <div class="mb-4">
-                <label class="block">Категория</label>
-                <select v-model="form.category_id" class="w-full">
-                    <option v-for="category in categories" :key="category.id" :value="category.id">
-                        {{ category.name }}
+                <select
+                    v-model="form.category_id"
+                    class="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 focus:ring focus:ring-blue-500 focus:border-blue-500 rounded-md w-full px-4 py-2"
+                >
+                    <option
+                        :value="null" disabled selected
+                    >
+                        Выберите категорию
+                    </option>
+                    <option
+                        v-for="category in categories"
+                        :key="category.id"
+                        :value="category.id"
+                    >
+                        {{ category.title }}
                     </option>
                 </select>
             </div>
 
             <div class="mb-4">
                 <label class="block">Дата публикации</label>
-                <input v-model="form.published_at" type="datetime-local" class="w-full" />
+                <input v-model="form.published_at" type="datetime-local" class="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 focus:ring focus:ring-blue-500 focus:border-blue-500 rounded-md w-full px-4 py-2"
+                />
             </div>
 
             <div class="mb-4">
@@ -39,8 +70,11 @@
 <script>
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import axios from 'axios'
+import {Link} from "@inertiajs/vue3";
+
 
 export default {
+    components: {Link},
     layout: AdminLayout,
     props: {
         categories: Array,
@@ -52,6 +86,7 @@ export default {
                 content: '',
                 category_id: null,
                 published_at: '',
+                tags: [],
             },
             imageFile: null,
         }
@@ -66,6 +101,10 @@ export default {
             if (this.imageFile) {
                 formData.append('image', this.imageFile)
             }
+
+            this.form.tags.forEach(tag => {
+                formData.append('tags[]', tag)
+            })
 
             await axios.post(route('admin.posts.store'), formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }

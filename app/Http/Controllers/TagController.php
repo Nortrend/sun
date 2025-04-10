@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\Tag\TagResource;
-use App\Services\TagServicce;
+use App\Services\TagService;
 use Illuminate\Http\JsonResponse;
 use App\Models\Tag;
 use Illuminate\Http\Request;
@@ -14,7 +14,7 @@ class TagController extends Controller
     /**
      * Передача объекта класса ProfileService в качестве свойства текущего класса
      */
-    public function __construct(private readonly TagServicce $tagService)
+    public function __construct(private readonly TagService $tagService)
     {
     }
 

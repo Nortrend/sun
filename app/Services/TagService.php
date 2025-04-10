@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Tag;
 
-class TagServicce
+class TagService
 {
     /**
      * Create a new class instance.
@@ -17,7 +17,7 @@ class TagServicce
     /**
      * Создание тэга в таблице
      */
-    public function store(array $data): Tag
+    public function store(array $data)
     {
 
         return Tag::create($data);

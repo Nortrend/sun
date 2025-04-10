@@ -28,7 +28,7 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-        $post->load(['profile', 'image']); // 🔥 добавили image
+        $post->load(['profile', 'image', 'category']);
         $post = PostResource::make($post)->resolve();
         return inertia('Admin/Post/Show', compact('post'));
     }

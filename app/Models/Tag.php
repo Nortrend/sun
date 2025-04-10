@@ -13,6 +13,7 @@ class Tag extends Model
 
     use HasFactory;
 //    use HasLogs;
+    protected $fillable = ['title'];
 
 
 

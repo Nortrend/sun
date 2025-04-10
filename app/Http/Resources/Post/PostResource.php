@@ -10,23 +10,43 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostResource extends JsonResource
 {
-    /**
-     * Определение того, какие данные нужно выводить
-     */
     public function toArray(Request $request): array
     {
-
         return [
-            'liked'         => $this->likedBy()->where('profile_id', auth()->user()?->profile->id)->exists(),
-            'id'            => $this->id,
-            'title'         => $this->title,
-            'content'       => $this->content,
-            'image'         => ImageResource::make($this->whenLoaded('image')),
-            'image_url'     => $this->image_url,
-//            'category_id'   => CategoryResource::make($this->whenLoaded('category')),
-            'likes_count'   => $this->likes_count ?? 0, // 🔥 Добавляем `?? 0`, чтобы не было null
-            'profile'       => ProfileResource::make($this->profile)->resolve(),
+            'id'          => $this->id,
+            'title'       => $this->title,
+            'content'     => $this->content,
+            'image_url'   => $this->image_url,
+
+            // 🔒 Безопасно отдаём image через ресурс
+            'image'       => $this->relationLoaded('image') && $this->image
+                ? ImageResource::make($this->image)->resolve()
+                : null,
+
+            // ✅ Надёжно и просто: сразу массив без "data"
+            'category'    => $this->whenLoaded('category', function () {
+                return [
+                    'id'    => $this->category->id,
+                    'title' => $this->category->title,
+                ];
+            }),
+
+            // ✅ Профиль — используем ресурс, но добавляем защиту
+            'profile'     => $this->relationLoaded('profile') && $this->profile
+                ? ProfileResource::make($this->profile)->resolve()
+                : null,
+
+            // ❤️ Лайки и пользовательские флаги
+            'liked'       => $this->likedBy()->where('profile_id', auth()->user()?->profile->id)->exists(),
+            'likes_count' => $this->likes_count ?? 0,
+
+            // 🏷️ Теги — как массив сразу
+            'tags' => $this->whenLoaded('tags', function () {
+                return $this->tags->map(fn($tag) => [
+                    'id' => $tag->id,
+                    'title' => $tag->title,
+                ]);
+            }),
         ];
     }
 }
-

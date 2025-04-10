@@ -32,6 +32,9 @@
         <li>
             <Link :href="route('admin.role_users.index')">User->Role</Link>
         </li>
+        <li>
+            <Link :href="route('admin.tags.index')">Tags</Link>
+        </li>
       </ul>
     </nav>
     <main class="content">

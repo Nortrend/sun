@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleUserController;
 use App\Http\Middleware\CheckRoleMiddleware;
@@ -37,6 +38,12 @@ Route::group(['prefix' =>'admin', 'middleware' => 'auth'], function () {
     Route::post('categories', [CategoryController::class, 'store'])->name('admin.categories.store');
     Route::get('categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
     Route::get('categories/{category}', [CategoryController::class, 'show'])->name('admin.categories.show');
+
+    Route::get('tags', [TagController::class, 'index'])->name('admin.tags.index');
+    Route::post('tags', [TagController::class, 'store'])->name('admin.tags.store');
+    Route::get('tags/create', [TagController::class, 'create'])->name('admin.tags.create');
+    Route::get('tags/list', [TagController::class, 'list'])->name('admin.tags.list');
+    Route::get('tags/{tag}', [TagController::class, 'show'])->name('admin.tags.show');
 
     Route::get('users', [UserController::class, 'index'])->name('admin.users.index');
     Route::post('users', [UserController::class, 'store'])->name('admin.users.store');
