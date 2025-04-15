@@ -20,14 +20,26 @@ class PostService
         $imagePath = $data['image_path'] ?? null;
         unset($data['image_path']);
 
+// Убираем tag_ids перед созданием поста
+        $tagIds = $data['tag_ids'] ?? [];
+        unset($data['tag_ids']);
+
+// Создаем пост
         $post = Post::create($data);
 
+// Сохраняем изображение
         if ($imagePath !== null) {
             $post->image()->create(['image_path' => $imagePath]);
         }
 
+// Привязываем теги
+        if (!empty($tagIds)) {
+            $post->tags()->sync($tagIds);
+        }
+
         return $post;
     }
+
 
     public function update(int $id, array $data)
     {

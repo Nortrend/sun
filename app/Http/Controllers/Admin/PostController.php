@@ -8,6 +8,7 @@ use App\Http\Resources\Category\CategoryResource;
 use App\Http\Resources\Post\PostResource;
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\Tag;
 use App\Services\PostService;
 use Illuminate\Support\Facades\Log;
 
@@ -62,14 +63,16 @@ class PostController extends Controller
     public function create()
     {
         $categories = CategoryResource::collection(Category::all())->resolve();
-        return inertia('Admin/Post/Create', compact('categories'));
+        $tags = Tag::select(['id', 'title'])->get();
+        return inertia('Admin/Post/Create', compact('categories', 'tags'));
     }
 
     public function store(StoreRequest $request)
     {
         $data = $request->except('image');
         $post = PostService::store($data);
-        return PostResource::make($post)->resolve();
+        return redirect()->route('admin.posts.create')
+            ->with('success', 'Пост успешно создан!');
     }
 
 }

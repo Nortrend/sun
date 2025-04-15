@@ -38,12 +38,17 @@ class TagController extends Controller
         return inertia('Admin/Tag/Create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        $tag = $this->tagService->store($request->validate([
-            'title' => 'required|string|max:255'
-        ]));
-        return redirect()->route('admin.tags.index')->with('success', 'Тэг успешно создана');
+        $request->validate([
+            'title' => 'required|string|unique:tags,title',
+        ]);
+
+        $tag = Tag::create([
+            'title' => $request->input('title'),
+        ]);
+
+        return response()->json($tag);
     }
 
     public function list(Request $request)

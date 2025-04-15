@@ -1,118 +1,176 @@
 <template>
     <div>
-        <div>
-            <Link
-                :href="route('admin.posts.index')"
-                class="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800 transition shadow-md mt-4 inline-block"
-            >
-                ← Назад
-            </Link>
-            <div class="mt-10"></div>
-        </div>
-        <form @submit.prevent="submit">
-            <div class="mb-4">
+        <FlashMessage :flash="$page.props.flash" />
+
+        <Link :href="route('admin.posts.index')" class="btn-back">← Назад</Link>
+
+        <form @submit.prevent="submit" class="space-y-4 mt-6">
+            <!-- Заголовок -->
+            <div>
                 <label class="block">Заголовок</label>
-                <div class="mb-4">
-                    <input
-                        v-model="form.title"
-                        type="text"
-                        class="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 focus:ring focus:ring-blue-500 focus:border-blue-500 rounded-md w-full px-4 py-2"
-                    >
-                </div>
+                <input v-model="form.title" type="text" class="input" />
             </div>
-            <div class="mb-4">
+
+            <!-- Контент -->
+            <div>
                 <label class="block">Контент</label>
-                <div class="mb-4">
-                    <input
-                        v-model="form.content"
-                        type="text"
-                        class="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 focus:ring focus:ring-blue-500 focus:border-blue-500 rounded-md w-full px-4 py-2"
-                    >
-                </div>
+                <input v-model="form.content" type="text" class="input" />
             </div>
-            <label class="block">Категория</label>
-            <div class="mb-4">
-                <select
-                    v-model="form.category_id"
-                    class="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 focus:ring focus:ring-blue-500 focus:border-blue-500 rounded-md w-full px-4 py-2"
-                >
-                    <option
-                        :value="null" disabled selected
-                    >
-                        Выберите категорию
-                    </option>
-                    <option
-                        v-for="category in categories"
-                        :key="category.id"
-                        :value="category.id"
-                    >
+
+            <!-- Категория -->
+            <div>
+                <label class="block">Категория</label>
+                <select v-model="form.category_id" class="input">
+                    <option :value="null" disabled selected>Выберите категорию</option>
+                    <option v-for="category in categories" :key="category.id" :value="category.id">
                         {{ category.title }}
                     </option>
                 </select>
             </div>
 
-            <div class="mb-4">
+            <!-- Теги -->
+            <div class="relative">
+                <label class="block">Теги</label>
+                <input
+                    v-model="tagSearch"
+                    @input="filterTags"
+                    @keydown.enter.prevent="addTag(tagSearch)"
+                    placeholder="Введите тег"
+                    class="input"
+                />
+
+                <ul
+                    v-if="filteredTags.length > 0 && tagSearch.length > 0"
+                    class="absolute z-10 bg-gray-800 border border-gray-600 mt-1 rounded w-full max-h-40 overflow-y-auto"
+                >
+                    <li
+                        v-for="tag in filteredTags"
+                        :key="tag.id"
+                        @click="addTag(tag.title)"
+                        class="px-4 py-2 hover:bg-gray-700 cursor-pointer"
+                    >
+                        {{ tag.title }}
+                    </li>
+                </ul>
+
+                <div class="flex gap-2 mt-2 flex-wrap">
+          <span
+              v-for="tag in selectedTags"
+              :key="tag.id"
+              class="bg-blue-700 text-white px-3 py-1 rounded flex items-center gap-1"
+          >
+            {{ tag.title }}
+            <button @click="removeTag(tag)" class="text-white">&times;</button>
+          </span>
+                </div>
+            </div>
+
+            <!-- Дата публикации -->
+            <div>
                 <label class="block">Дата публикации</label>
-                <input v-model="form.published_at" type="datetime-local" class="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 focus:ring focus:ring-blue-500 focus:border-blue-500 rounded-md w-full px-4 py-2"
+                <input
+                    v-model="form.published_at"
+                    type="datetime-local"
+                    class="input"
                 />
             </div>
 
-            <div class="mb-4">
+            <!-- Изображение -->
+            <div>
                 <label class="block">Изображение</label>
-                <input type="file" @change="onImageChange" />
+                <input type="file" @change="onImageChange" class="input" />
             </div>
 
-            <button type="submit" class="btn btn-primary">Создать</button>
+            <!-- Кнопка -->
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                Создать
+            </button>
         </form>
     </div>
 </template>
 
 <script>
+import { useForm, Link } from '@inertiajs/vue3'
+import FlashMessage from '@/Components/FlashMessage.vue'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import axios from 'axios'
-import {Link} from "@inertiajs/vue3";
-
 
 export default {
-    components: {Link},
-    layout: AdminLayout,
+    components: { FlashMessage, Link },
     props: {
         categories: Array,
+        tags: Array
     },
+    layout: AdminLayout,
     data() {
         return {
-            form: {
+            tagSearch: '',
+            selectedTags: [],
+            filteredTags: [],
+            form: useForm({
                 title: '',
                 content: '',
                 category_id: null,
-                published_at: '',
-                tags: [],
-            },
-            imageFile: null,
+                published_at: null,
+                image: null,
+                tag_ids: []
+            })
         }
     },
     methods: {
-        async submit() {
-            const formData = new FormData()
-            formData.append('title', this.form.title)
-            formData.append('content', this.form.content)
-            formData.append('category_id', this.form.category_id)
-            formData.append('published_at', this.form.published_at)
-            if (this.imageFile) {
-                formData.append('image', this.imageFile)
+        filterTags() {
+            const s = this.tagSearch.toLowerCase()
+            this.filteredTags = this.tags.filter(
+                tag => tag.title.toLowerCase().includes(s) &&
+                    !this.selectedTags.find(t => t.id === tag.id)
+            )
+        },
+        async addTag(title) {
+            if (!title.trim()) return
+
+            const existing = this.tags.find(t => t.title.toLowerCase() === title.toLowerCase())
+            if (existing && !this.selectedTags.find(t => t.id === existing.id)) {
+                this.selectedTags.push(existing)
+            } else if (!existing) {
+                try {
+                    const { data } = await axios.post('/admin/tags', { title })
+                    this.tags.push(data)
+                    this.selectedTags.push(data)
+                } catch (e) {
+                    alert('Ошибка при добавлении тега')
+                }
             }
 
-            this.form.tags.forEach(tag => {
-                formData.append('tags[]', tag)
-            })
-
-            await axios.post(route('admin.posts.store'), formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            })
+            this.tagSearch = ''
+            this.filteredTags = []
+        },
+        removeTag(tag) {
+            this.selectedTags = this.selectedTags.filter(t => t.id !== tag.id)
         },
         onImageChange(e) {
-            this.imageFile = e.target.files[0]
+            this.form.image = e.target.files[0]
         },
-    },
+        submit() {
+            this.form.tag_ids = this.selectedTags.map(t => t.id)
+
+            this.form.post(this.route('admin.posts.store'), {
+                forceFormData: true,
+                onSuccess: () => {
+                    this.$inertia.reload({ only: ['flash'] })
+                    this.selectedTags = []
+                    this.tagSearch = ''
+                }
+            })
+        }
+    }
 }
 </script>
+
+<style scoped>
+.input {
+    @apply bg-gray-800 text-white border border-gray-600 rounded-md px-4 py-2 w-full;
+}
+.btn-back {
+    @apply px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800 transition shadow-md mt-4 inline-block;
+}
+</style>

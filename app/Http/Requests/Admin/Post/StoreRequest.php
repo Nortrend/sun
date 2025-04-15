@@ -19,6 +19,9 @@ class StoreRequest extends FormRequest
             'content'=> 'nullable|string',
             'category_id'=> 'required|integer|exists:categories,id',
             'image' => 'nullable|file|mimes:jpg,jpeg,png,gif',
+            'tag_ids' => 'nullable|array',
+            'tag_ids.*' => 'integer|exists:tags,id',
+
         ];
     }
 
