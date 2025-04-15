@@ -49,5 +49,11 @@ class StoreRequest extends FormRequest
             'image_path' => $imagePath,
         ]);
     }
+     public function messages(){
+         return [
+             'title.required' => 'Это поле обязательно к заполнению!',
+             'category_id.required' => 'Это поле обязательно к заполнению!'
+         ];
+     }
 
 }

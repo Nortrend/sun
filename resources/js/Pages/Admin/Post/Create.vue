@@ -1,14 +1,39 @@
 <template>
     <div>
-        <FlashMessage :flash="$page.props.flash" />
 
-        <Link :href="route('admin.posts.index')" class="btn-back">← Назад</Link>
+        <FlashMessage
+            :flash="$page.props.flash"
+        />
 
-        <form @submit.prevent="submit" class="space-y-4 mt-6">
+        <Link
+            :href="route('admin.posts.index')"
+            class="btn-back"
+        >
+            ← Назад
+        </Link>
+
+        <form
+            @submit.prevent="submit"
+            class="space-y-4 mt-6"
+        >
             <!-- Заголовок -->
             <div>
-                <label class="block">Заголовок</label>
-                <input v-model="form.title" type="text" class="input" />
+                <label class="block">
+                    Заголовок
+                </label>
+                <input
+                    v-model="form.title"
+                    type="text"
+                    class="input"
+                    :class="{ '!border-red-500 ring ring-red-300': form.errors.title }"
+
+                />
+                <div
+                    v-if="form.errors.title"
+                    class="text-red-500"
+                >
+                    {{ form.errors.title }}
+                </div>
             </div>
 
             <!-- Контент -->
@@ -19,13 +44,39 @@
 
             <!-- Категория -->
             <div>
-                <label class="block">Категория</label>
-                <select v-model="form.category_id" class="input">
-                    <option :value="null" disabled selected>Выберите категорию</option>
-                    <option v-for="category in categories" :key="category.id" :value="category.id">
+                <label
+                    class="block"
+                >
+                    Категория
+                </label>
+
+                <select
+                    v-model="form.category_id"
+                    class="input"
+                    :class="{ '!border-red-500 ring ring-red-300': form.errors.category_id }"
+                >
+                    <option
+                        :value="null"
+                        disabled selected
+                    >
+                        Выберите категорию
+                    </option>
+
+                    <option
+                        v-for="category in categories"
+                        :key="category.id"
+                        :value="category.id"
+                    >
                         {{ category.title }}
                     </option>
+
                 </select>
+                <div
+                    v-if="form.errors.category_id"
+                    class="text-red-500"
+                >
+                    {{ form.errors.category_id }}
+                </div>
             </div>
 
             <!-- Теги -->
@@ -114,7 +165,8 @@ export default {
                 published_at: null,
                 image: null,
                 tag_ids: []
-            })
+            }),
+            errors: {}
         }
     },
     methods: {
@@ -162,7 +214,20 @@ export default {
                 }
             })
         }
+    },
+    watch: {
+        'form.title'(value) {
+            if (value) this.form.clearErrors('title')
+        },
+        'form.category_id'(value) {
+            if (value) this.form.clearErrors('category_id')
+        },
+        // можешь добавить другие поля по аналогии:
+        // 'form.content'(value) {
+        //     if (value) this.form.clearErrors('content')
+        // },
     }
+
 }
 </script>
 

@@ -20,6 +20,8 @@
     },
     "dependencies": {
         "@inertiajs/inertia": "^0.11.1",
-        "@vueform/multiselect": "^2.6.11"
+        "@vueform/multiselect": "^2.6.11",
+        "lodash": "^4.17.21",
+        "vue-router": "^4.5.0"
     }
 }

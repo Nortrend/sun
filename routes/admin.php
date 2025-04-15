@@ -16,13 +16,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' =>'admin', 'middleware' => 'auth'], function () {
 
-    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('posts', [PostController::class, 'index'])->name('admin.posts.index');
     Route::post('posts', [PostController::class, 'store'])->name('admin.posts.store');
     Route::get('posts/create', [PostController::class, 'create'])->name('admin.posts.create');
     Route::post('posts/{post}/like', [PostController::class, 'toggleLike'])->name('admin.posts.toggleLike');
     Route::get('posts/{post}', [PostController::class, 'show'])->name('admin.posts.show');
+    Route::delete('posts/{post}', [PostController::class, 'destroy'])->name('admin.posts.destroy');
 
     Route::get('articles', [ArticleController::class, 'index'])->name('admin.articles.index');
     Route::post('articles', [ArticleController::class, 'store'])->name('admin.articles.store');

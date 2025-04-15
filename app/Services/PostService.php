@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PostService
 {
@@ -14,31 +16,41 @@ class PostService
 
     /**
      * Создание поста в таблице
+     * @throws \Exception
      */
     public static function store(array $data): Post
     {
-        $imagePath = $data['image_path'] ?? null;
-        unset($data['image_path']);
+        DB::beginTransaction();
+        $post = null;
 
-// Убираем tag_ids перед созданием поста
-        $tagIds = $data['tag_ids'] ?? [];
-        unset($data['tag_ids']);
+        try {
+            $imagePath = $data['image_path'] ?? null;
+            unset($data['image_path']);
 
-// Создаем пост
-        $post = Post::create($data);
+            $tagIds = $data['tag_ids'] ?? [];
+            unset($data['tag_ids']);
 
-// Сохраняем изображение
-        if ($imagePath !== null) {
-            $post->image()->create(['image_path' => $imagePath]);
-        }
+            $post = Post::create($data);
 
-// Привязываем теги
-        if (!empty($tagIds)) {
-            $post->tags()->sync($tagIds);
+            if ($imagePath !== null) {
+                $post->image()->create(['image_path' => $imagePath]);
+            }
+
+            if (!empty($tagIds)) {
+                $post->tags()->sync($tagIds);
+            }
+
+            DB::commit();
+
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            Log::error('Post creation failed', ['error' => $exception->getMessage()]);
+            throw $exception;
         }
 
         return $post;
     }
+
 
 
     public function update(int $id, array $data)

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Post\IndexRequest;
 use App\Http\Requests\Admin\Post\StoreRequest;
 use App\Http\Resources\Category\CategoryResource;
 use App\Http\Resources\Post\PostResource;
@@ -10,7 +11,13 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Services\PostService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
+use Inertia\Response;
+use Inertia\ResponseFactory;
 
 class PostController extends Controller
 {
@@ -21,11 +28,26 @@ class PostController extends Controller
         $this->postService = $postService;
     }
 
-    public function index()
+    public function index(IndexRequest $request)
     {
-        $posts = PostResource::collection(Post::all())->resolve();
+        $data = $request->validationData();
+
+        $key = md5(json_encode($data));
+
+        $posts = Cache::remember($key, now()->addMinutes(10), function () use ($data) {
+            return PostResource::collection(
+                Post::filter($data)->latest()->paginate($data['per_page'], '*', 'page', $data['page'])
+            );
+        });
+
+        if (Request::wantsJson()) {
+            return $posts;
+        }
+
         return inertia('Admin/Post/Index', compact(['posts']));
     }
+
+
 
     public function show(Post $post)
     {
@@ -69,10 +91,25 @@ class PostController extends Controller
 
     public function store(StoreRequest $request)
     {
+        Cache::flush();
+
         $data = $request->except('image');
+
         $post = PostService::store($data);
+
         return redirect()->route('admin.posts.create')
             ->with('success', 'Пост успешно создан!');
     }
 
+    public function destroy(Post $post)
+    {
+
+        Cache::flush();
+
+        $post->delete();
+
+        return response()->json([
+            'message' => 'Deleted successfully!'
+        ]);
+    }
 }
