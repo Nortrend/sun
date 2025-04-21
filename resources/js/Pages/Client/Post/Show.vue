@@ -1,22 +1,29 @@
 <script>
 import ClientLayout from "@/Layouts/ClientLayout.vue";
 import {Link} from "@inertiajs/vue3";
+import CommentTree from "@/Components/CommentTree.vue";
 
 export default {
     name: "Index",
 
-    components: {Link},
+    components: {Link,
+        CommentTree},
 
     layout: ClientLayout,
 
-    props: {
-        posts: Array,
+    mounted() {
+        this.getComments()
     },
 
-    data() {
+    data () {
         return {
-            postsData: this.posts,
+            comment: {},
+            comments: [],
         }
+    },
+
+    props: {
+        post: Object,
     },
 
     methods: {
@@ -28,7 +35,51 @@ export default {
             } catch (e) {
                 console.error("Ошибка при переключении лайка", e);
             }
+        },
+
+        storeComment() {
+            axios.post(route('posts.comments.store', this.post.id), this.comment)
+                .then(res => {
+                    const newComment = res.data;
+
+                    // если комментарий без родителя — просто вставляем в корень
+                    if (!newComment.parent_id) {
+                        this.comments.unshift(newComment);
+                    } else {
+                        // если с parent_id — передаём его вниз в CommentTree
+                        this.addReplyToTree({ parentId: newComment.parent_id, comment: newComment });
+                    }
+
+                    this.comment.content = '';
+                });
+        },
+
+        getComments() {
+            axios.get(route('posts.comments.index', this.post.id))
+                .then( res => {
+                    this.comments = res.data;
+                })
+        },
+
+        addReplyToTree({ parentId, comment }) {
+            const target = this.findCommentById(this.comments, parentId);
+            if (target) {
+                if (!target.children) target.children = [];
+                target.children.unshift(comment);
+            }
+        },
+
+        findCommentById(comments, id) {
+            for (let comment of comments) {
+                if (comment.id === id) return comment;
+                if (comment.children) {
+                    const result = this.findCommentById(comment.children, id);
+                    if (result) return result;
+                }
+            }
+            return null;
         }
+
     }
 
 }
@@ -39,18 +90,15 @@ export default {
     <div>
         <div class="mt-10">
             <div
-                v-for="post in posts"
-                :key="post.id"
                 class="mb-6 p-5 border rounded-2xl shadow-sm bg-white border-gray-200 dark:bg-gray-800 dark:border-gray-700 transition-colors"
             >
                 <div class="flex flex-col gap-2">
                     <!-- Заголовок -->
-                    <Link
-                        :href="route('posts.show', post.id)"
+                    <p
                         class="text-xl font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
                     >
                         {{ post.title }}
-                    </Link>
+                    </p>
 
                     <!-- Контент -->
                     <p
@@ -106,6 +154,32 @@ export default {
                     </div>
                 </div>
             </div>
+            <div
+                class="mb-6 p-5 border rounded-2xl shadow-sm bg-white border-gray-200 dark:bg-gray-800 dark:border-gray-700 transition-colors"
+            >
+                <div
+                class="mb-4"
+                >
+                    <textarea
+                        v-model="comment.content"
+                        class="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 focus:ring focus:ring-blue-500 focus:border-blue-500 rounded-md w-full px-4 py-2 resize-none"
+                        placeholder="Введите комментарий..."
+                    >
+                    </textarea>
+                </div>
+                <div>
+                    <a
+                        @click.prevent="storeComment"
+                        href="#"
+                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    >
+                        Отправить
+                    </a>
+                </div>
+            </div>
+            <CommentTree :comments="comments" @reply-added="addReplyToTree" />
+
+
         </div>
     </div>
 </template>

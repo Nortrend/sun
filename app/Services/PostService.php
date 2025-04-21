@@ -53,16 +53,43 @@ class PostService
 
 
 
-    public function update(int $id, array $data)
+    public function update(int $id, array $data): Post
     {
-        $post = Post::find($id);
+        DB::beginTransaction();
 
-        if (!$post) {
-            return null;
+        try {
+            $post = Post::findOrFail($id);
+
+            $imagePath = $data['image_path'] ?? null;
+            unset($data['image_path']);
+            unset($data['image']);
+
+            $tagIds = $data['tag_ids'] ?? [];
+            unset($data['tag_ids']);
+
+            $post->update($data);
+
+            if ($imagePath !== null) {
+                if ($post->image) {
+                    $post->image()->update(['image_path' => $imagePath]);
+                } else {
+                    $post->image()->create(['image_path' => $imagePath]);
+                }
+            }
+
+            $post->tags()->sync($tagIds);
+
+            DB::commit();
+
+            return $post;
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('Ошибка при обновлении поста', [
+                'post_id' => $id,
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
         }
-
-        $post->update($data);
-        return $post;
     }
 
     public function destroy(int $id): bool

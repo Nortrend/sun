@@ -22,6 +22,8 @@ Route::group(['prefix' =>'admin', 'middleware' => 'auth'], function () {
     Route::post('posts', [PostController::class, 'store'])->name('admin.posts.store');
     Route::get('posts/create', [PostController::class, 'create'])->name('admin.posts.create');
     Route::post('posts/{post}/like', [PostController::class, 'toggleLike'])->name('admin.posts.toggleLike');
+    Route::get('posts/{post}/edit', [PostController::class, 'edit'])->name('admin.posts.edit');
+    Route::put('posts/{post}', [PostController::class, 'update'])->name('admin.posts.update');
     Route::get('posts/{post}', [PostController::class, 'show'])->name('admin.posts.show');
     Route::delete('posts/{post}', [PostController::class, 'destroy'])->name('admin.posts.destroy');
 

@@ -40,21 +40,27 @@
                 :key="post.id"
                 class="mb-4 pb-4 border-b border-gray-200 rounded-lg shadow-sm"
             >
-                <div
-                    class="flex justify-between"
-                >
-                    <Link
-                        :href="route('admin.posts.show', post.id)"
-                    >
+                <div class="flex justify-between items-center">
+                    <Link :href="route('admin.posts.show', post.id)">
                         {{ post.title }}
                     </Link>
-                    <a
-                        @click.prevent="deletePost(post)"
-                        href="#"
-                    >
-                        Удалить
-                    </a>
+                    <div class="flex items-center gap-4">
+                        <a
+                            @click.prevent="deletePost(post)"
+                            href="#"
+                            class="text-red-400 hover:text-red-600"
+                        >
+                            Удалить
+                        </a>
+                        <Link
+                            :href="route('admin.posts.edit', post.id)"
+                            class="text-blue-400 hover:text-blue-600"
+                        >
+                            Редактировать
+                        </Link>
+                    </div>
                 </div>
+
             </div>
         </div>
         <div class="mt-6 flex flex-wrap gap-2">
@@ -87,7 +93,7 @@ export default {
     layout: AdminLayout,
 
     props: {
-        posts: Array,
+        posts: Object,
     },
 
     components: {
@@ -127,9 +133,11 @@ export default {
         deletePost(post) {
             axios.delete(route('admin.posts.destroy', post.id))
                 .then(() => {
-                    this.postsData = this.postsData.filter(p => p.id !== post.id);
+                    this.getPosts()
                 })
         }
+
+
     },
 };
 </script>

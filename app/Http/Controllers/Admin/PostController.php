@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Post\IndexRequest;
 use App\Http\Requests\Admin\Post\StoreRequest;
+use App\Http\Requests\Admin\Post\UpdateRequest;
 use App\Http\Resources\Category\CategoryResource;
 use App\Http\Resources\Post\PostResource;
 use App\Models\Category;
@@ -112,4 +113,33 @@ class PostController extends Controller
             'message' => 'Deleted successfully!'
         ]);
     }
+
+    public function update(UpdateRequest $request, Post $post)
+    {
+        Cache::flush();
+
+        $data = $request->all(); // вместо validated()
+
+        $this->postService->update($post->id, $data);
+
+        return redirect()->route('admin.posts.show', $post->id)
+            ->with('success', 'Пост успешно обновлён!');
+    }
+
+
+    public function edit(Post $post)
+    {
+        $post->load(['category', 'tags', 'image']);
+
+        $categories = CategoryResource::collection(Category::all())->resolve();
+        $tags = Tag::select(['id', 'title'])->get();
+
+        return inertia('Admin/Post/Update', [
+            'post' => PostResource::make($post)->resolve(),
+            'categories' => $categories,
+            'tags' => $tags,
+        ]);
+    }
+
+
 }
